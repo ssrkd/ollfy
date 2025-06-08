@@ -641,6 +641,10 @@
     const soundLabel = document.getElementById("sound-label");
     const bars = document.getElementById("sound-bars").children;
     let isSoundOn = true;
+    window.addEventListener("DOMContentLoaded", () => {
+  [...bars].forEach(dot => dot.classList.add("sound-on"));
+});
+
 
     window.addEventListener("scroll", () => {
       navbar.classList.toggle("scrolled", window.scrollY > 20);
