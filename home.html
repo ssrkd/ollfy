@@ -330,6 +330,13 @@
       ];
 
       videos.forEach(video => {
+  const vid = document.createElement('video');
+  vid.src = video.url;
+  vid.preload = 'auto';
+});
+
+
+      videos.forEach(video => {
         document.write(`
           <div class="card">
             <div class="video-wrapper">
