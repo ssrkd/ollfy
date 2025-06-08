@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Navbar</title>
+  <style>
+  body {
+    margin: 0;
+    background: black;
+    font-family: sans-serif;
+    color: white;
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .navbar.scrolled {
+    padding: 12px 40px;
+    background: rgba(0, 0, 0, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .logo {
+    position: absolute;
+    left: 40px;
+    width: 80px;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .logo:hover {
+    transform: translateY(-1px);
+  }
+
+  .sound-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+  }
+
+  .sound-wrapper:hover {
+    color: #4ecdc4;
+  }
+
+  .bars {
+    display: grid;
+    grid-template-columns: repeat(8, 2px);
+    grid-template-rows: repeat(3, 2px);
+    gap: 2px;
+    margin-right: 12px;
+  }
+
+  .dot {
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    opacity: 0.15;
+    animation: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .dot.sound-on {
+    animation: soundWave 1.4s ease-in-out infinite;
+    opacity: 0.9;
+  }
+
+  @keyframes soundWave {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      transform: scale(1.6);
+      opacity: 1;
+    }
+  }
+
+  .nav-right {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .btn {
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+  }
+
+  .clock-wrapper {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: white;
+  }
+
+  .city-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .text-block {
+    display: flex;
+    justify-content: space-between;
+    width: 160px;
+  }
+
+  .circle, .moon {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .moon::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: black;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .nav-container {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 999px;
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .nav-item {
+    padding: 0.6rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    background: transparent;
+    transition: all 0.3s ease;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-item.active {
+    background: white;
+    color: black;
+  }
+</style>
+
+<div class="navbar" id="navbar">
+  <a href="home.html">
+    <img src="images/logo.png" alt="logo" class="logo" />
+  </a>
+
+  <div class="sound-wrapper" onclick="toggleSound()">
+    <div class="bars" id="sound-bars">
+      <!-- 24 dots -->
+      <script>
+        for (let i = 0; i < 24; i++) {
+          document.write(`<div class="dot" style="animation-delay: ${Math.random()}s;"></div>`);
+        }
+      </script>
+    </div>
+    <span id="sound-label">SOUND [ON]</span>
+  </div>
+
+  <div class="nav-right">
+    <div class="clock-wrapper" id="clock"></div>
+    <a href="https://wa.me/77768883007" target="_blank" rel="noopener noreferrer">
+      <button class="btn">Заказать</button>
+    </a>
+  </div>
+
+  <audio id="navbar-audio" src="images/work.mp3" autoplay loop></audio>
+</div>
+
+<div class="footer">
+  <div class="nav-container">
+    <a href="index.html" class="nav-item" onclick="playClick(this)">Парфюмы</a>
+    <a href="About.html" class="nav-item" onclick="playClick(this)">О нас</a>
+    <a href="Contact.html" class="nav-item" onclick="playClick(this)">Контакт</a>
+  </div>
+</div>
+
+<audio id="click-sound" src="images/click.mp3" preload="auto"></audio>
+
+  <script>
+    const navbar = document.getElementById("navbar");
+    const audio = document.getElementById("navbar-audio");
+    const soundLabel = document.getElementById("sound-label");
+    const bars = document.getElementById("sound-bars").children;
+    let isSoundOn = true;
+
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 20);
+    });
+
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      if (isSoundOn) {
+        audio.play();
+        soundLabel.textContent = "SOUND [ON]";
+        [...bars].forEach(dot => dot.classList.add("sound-on"));
+      } else {
+        audio.pause();
+        soundLabel.textContent = "SOUND [OFF]";
+        [...bars].forEach(dot => dot.classList.remove("sound-on"));
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getUTCHours() + 6;
+      const localTime = `${hours % 24}`.padStart(2, '0') + ":" + `${now.getMinutes()}`.padStart(2, '0');
+      const isDay = hours >= 6 && hours < 18;
+
+      document.getElementById("clock").innerHTML = `
+        <div class="city-time" style="opacity:${isDay ? 1 : 0.6}">
+          <div class="${isDay ? "circle" : "moon"}" style="background:${isDay ? '#fff' : '#777'};"></div>
+          <div class="text-block">
+            <span>ASTANA, KZ</span>
+            <span>${localTime} GMT+6</span>
+          </div>
+        </div>
+      `;
+    }
+
+    updateClock();
+    setInterval(updateClock, 60000);
+
+    // FooterNav logic
+    const currentPage = location.pathname.split("/").pop();
+    document.querySelectorAll(".nav-item").forEach(link => {
+      if (link.getAttribute("href") === currentPage) {
+        link.classList.add("active");
+      }
+    });
+
+    function playClick(el) {
+      const sound = document.getElementById("click-sound");
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch((e) => console.log("Click sound error:", e));
+      }
+    }
+  </script>
+
+</body>
+</html>
