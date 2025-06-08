@@ -42,7 +42,7 @@
 
     .progress-bar-fill {
       height: 100%;
-      background-color: #22c55e; /* Tailwind's green-500 */
+      background-color: #22c55e;
       width: 0%;
       transition: width 0.02s linear;
     }
@@ -58,22 +58,23 @@
   </div>
 
   <script>
-    const progressBar = document.getElementById("progress-bar");
-    let progress = 0;
+  const progressBar = document.getElementById("progress-bar");
+  let progress = 0;
 
-    const interval = setInterval(() => {
-      if (progress >= 100) {
-        clearInterval(interval);
-        return;
-      }
-      progress++;
-      progressBar.style.width = progress + "%";
-    }, 20);
+  const interval = setInterval(() => {
+    if (progress >= 100) {
+      clearInterval(interval);
+      return;
+    }
+    progress++;
+    progressBar.style.width = progress + "%";
+  }, 20);
 
-    setTimeout(() => {
-      window.location.href = "home.html"; // переход к главной
-    }, 2200);
-  </script>
+  setTimeout(() => {
+    const nextPage = sessionStorage.getItem('redirectBack') || 'home.html';
+    window.location.href = `./${nextPage}`;
+  }, 2200);
+</script>
 
 </body>
 </html>

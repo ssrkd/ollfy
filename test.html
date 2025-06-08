@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Пример АвтоМузыки</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #000;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+    button {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Музыка</h1>
+  <button onclick="toggleSound()" id="toggleBtn">Toggle Sound</button>
+
+  <audio id="bg-music" src="images/work.mp3" loop></audio>
+
+  <script>
+    const audio = document.getElementById('bg-music');
+    const btn = document.getElementById('toggleBtn');
+    let isSoundOn = localStorage.getItem('isSoundOn') === 'true';
+
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      localStorage.setItem('isSoundOn', isSoundOn);
+      if (isSoundOn) {
+        audio.play();
+        btn.innerText = 'Sound OFF';
+      } else {
+        audio.pause();
+        btn.innerText = 'Sound ON';
+      }
+    }
+
+    // Сохраняем текущее время при уходе
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("audioTime", audio.currentTime);
+    });
+
+    // При загрузке восстанавливаем
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTime = parseFloat(localStorage.getItem("audioTime"));
+      if (!isNaN(savedTime)) {
+        audio.currentTime = savedTime;
+      }
+
+      if (isSoundOn) {
+        btn.innerText = 'Sound OFF';
+        // Автостарт только после клика
+        window.addEventListener("click", function onceStart() {
+          audio.play().catch(console.log);
+          window.removeEventListener("click", onceStart);
+        });
+      } else {
+        btn.innerText = 'Sound ON';
+      }
+    });
+  </script>
+</body>
+</html>

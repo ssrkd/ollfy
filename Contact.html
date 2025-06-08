@@ -247,7 +247,7 @@
       </a>
     </div>
 
-    <audio id="navbar-audio" src="images/work.mp3" autoplay loop></audio>
+    <audio id="navbar-audio" src="images/contact.mp3" autoplay loop></audio>
   </div>
 
     <!-- Toast Notification -->
@@ -636,67 +636,97 @@
   <audio id="click-sound" src="images/click.mp3" preload="auto"></audio>
 
   <script>
-    const navbar = document.getElementById("navbar");
-    const audio = document.getElementById("navbar-audio");
-    const soundLabel = document.getElementById("sound-label");
-    const bars = document.getElementById("sound-bars").children;
-    let isSoundOn = true;
-    window.addEventListener("DOMContentLoaded", () => {
-  [...bars].forEach(dot => dot.classList.add("sound-on"));
-});
+  const navbar = document.getElementById("navbar");
+  const audio = document.getElementById("navbar-audio");
+  const soundLabel = document.getElementById("sound-label");
+  const bars = document.getElementById("sound-bars").children;
+  let isSoundOn = localStorage.getItem("isSoundOn") === "true";
 
-
-    window.addEventListener("scroll", () => {
-      navbar.classList.toggle("scrolled", window.scrollY > 20);
-    });
-
-    function toggleSound() {
-      isSoundOn = !isSoundOn;
-      if (isSoundOn) {
-        audio.play();
+  // Применить визуал и попытаться воспроизвести звук
+  function applySoundState() {
+    if (isSoundOn) {
+      audio.play().then(() => {
         soundLabel.textContent = "SOUND [ON]";
         [...bars].forEach(dot => dot.classList.add("sound-on"));
-      } else {
-        audio.pause();
+      }).catch(() => {
+        // Браузер заблокировал — ставим OFF
         soundLabel.textContent = "SOUND [OFF]";
         [...bars].forEach(dot => dot.classList.remove("sound-on"));
-      }
+        isSoundOn = false;
+        localStorage.setItem("isSoundOn", "false");
+      });
+    } else {
+      audio.pause();
+      soundLabel.textContent = "SOUND [OFF]";
+      [...bars].forEach(dot => dot.classList.remove("sound-on"));
     }
+  }
 
-    function updateClock() {
-      const now = new Date();
-      const hours = now.getUTCHours() + 5;
-      const localTime = `${hours % 24}`.padStart(2, '0') + ":" + `${now.getMinutes()}`.padStart(2, '0');
-      const isDay = hours >= 6 && hours < 18;
+  // Вызовем при загрузке
+  window.addEventListener("DOMContentLoaded", applySoundState);
 
-      document.getElementById("clock").innerHTML = `
-        <div class="city-time" style="opacity:${isDay ? 1 : 0.6}">
-          <div class="${isDay ? "circle" : "moon"}" style="background:${isDay ? '#fff' : '#777'};"></div>
-          <div class="text-block">
-            <span>ASTANA, KZ</span>
-            <span>${localTime} GMT+5</span>
-          </div>
+  // По клику
+  function toggleSound() {
+    isSoundOn = !isSoundOn;
+    localStorage.setItem("isSoundOn", isSoundOn);
+    applySoundState();
+  }
+
+  // Navbar scroll effect
+  window.addEventListener("scroll", () => {
+    navbar.classList.toggle("scrolled", window.scrollY > 20);
+  });
+
+  // Часы
+  function updateClock() {
+    const now = new Date();
+    const hours = now.getUTCHours() + 5;
+    const localTime = `${hours % 24}`.padStart(2, '0') + ":" + `${now.getMinutes()}`.padStart(2, '0');
+    const isDay = hours >= 6 && hours < 18;
+    document.getElementById("clock").innerHTML = `
+      <div class="city-time" style="opacity:${isDay ? 1 : 0.6}">
+        <div class="${isDay ? "circle" : "moon"}" style="background:${isDay ? '#fff' : '#777'};"></div>
+        <div class="text-block">
+          <span>ASTANA, KZ</span>
+          <span>${localTime} GMT+5</span>
         </div>
-      `;
+      </div>
+    `;
+  }
+  updateClock();
+  setInterval(updateClock, 60000);
+
+  // Активная навигация
+  const currentPage = location.pathname.split("/").pop();
+  document.querySelectorAll(".nav-item").forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
     }
+  });
 
-    updateClock();
-    setInterval(updateClock, 60000);
-
-    const currentPage = location.pathname.split("/").pop();
-    document.querySelectorAll(".nav-item").forEach(link => {
-      if (link.getAttribute("href") === currentPage) {
-        link.classList.add("active");
-      }
-    });
-
-    function playClick() {
-      const sound = document.getElementById("click-sound");
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play().catch((e) => console.log("Click sound error:", e));
-      }
+  // Клик звук
+  function playClick() {
+    const sound = document.getElementById("click-sound");
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch((e) => console.log("Click sound error:", e));
     }
-  </script>
+  }
+</script>
+
+<script>
+  // Автозапуск после первого взаимодействия, если включено
+  window.addEventListener("click", function onceClick() {
+    if (localStorage.getItem("isSoundOn") === "true") {
+      audio.play().then(() => {
+        soundLabel.textContent = "SOUND [ON]";
+        [...bars].forEach(dot => dot.classList.add("sound-on"));
+      }).catch((e) => {
+        console.log("Autoplay blocked:", e);
+      });
+    }
+    window.removeEventListener("click", onceClick);
+  });
+</script>
 </body>
 </html>
