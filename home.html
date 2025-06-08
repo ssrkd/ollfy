@@ -368,6 +368,11 @@
     const bars = document.getElementById("sound-bars").children;
     let isSoundOn = true;
 
+    window.addEventListener("DOMContentLoaded", () => {
+  [...bars].forEach(dot => dot.classList.add("sound-on"));
+});
+
+
     window.addEventListener("scroll", () => {
       navbar.classList.toggle("scrolled", window.scrollY > 20);
     });
@@ -387,7 +392,7 @@
 
     function updateClock() {
       const now = new Date();
-      const hours = now.getUTCHours() + 6;
+      const hours = now.getUTCHours() + 5;
       const localTime = `${hours % 24}`.padStart(2, '0') + ":" + `${now.getMinutes()}`.padStart(2, '0');
       const isDay = hours >= 6 && hours < 18;
 
@@ -396,7 +401,7 @@
           <div class="${isDay ? "circle" : "moon"}" style="background:${isDay ? '#fff' : '#777'};"></div>
           <div class="text-block">
             <span>ASTANA, KZ</span>
-            <span>${localTime} GMT+6</span>
+            <span>${localTime} GMT+5</span>
           </div>
         </div>
       `;
